@@ -36,10 +36,12 @@ int main(int argc, char *argv[]){
 	m_sh *shared_memory;
 	shared_memory = (m_sh *) shmat(segment_id, NULL, 0);
 	int switcher = 1;
-
-	while(shared_memory->flag == 1){
-		printf("%d, %s", shared_memory->dec_num, shared_memory->bin_num);
-		shared_memory->flag = 0;
+	while(switcher){
+		if( shared_memory->flag == 1){
+			printf("%d, %s, %d\n", shared_memory->dec_num, shared_memory->bin_num, shared_memory->flag);
+			shared_memory->flag = 0;
+			printf("%d, %s, %d\n", shared_memory->dec_num, shared_memory->bin_num, shared_memory->flag);
+		}
 	}
 
 	/*

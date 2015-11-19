@@ -33,22 +33,25 @@ int main(){
 		printf("boom");
 	}
 	else if (pid == 0) { 
-		while(shared_memory->flag == 0){
+		execlp("./b.out", s, (char *)0);
+    	}
+    	else{
+		
+		while(1){
+			if(shared_memory->flag == 0){
 				printf("Please input a number:");
 				sprintf(shared_memory->bin_num, "aaaaaaaa");
-	    		scanf("%d", &shared_memory->dec_num);
-	    		shared_memory->flag = 1;
+	    			scanf("%d",&shared_memory->dec_num);		
+	    			shared_memory->flag = 1;
+				printf("%d, %s, %d in parent\n", shared_memory->dec_num, shared_memory->bin_num, shared_memory->flag);
+			}
 		}
-    }
-    else{
-    	execlp("./b.out", s, (char *)0);
-    }
+    	}
 
-    /* now detach the shared memory segment */
-    shmdt(shared_memory);
- 
-    /* now remove the shared memory segment */
-   	shmctl(segment_id, IPC_RMID, NULL);
-
-    return 0;
+    	/* now detach the shared memory segment */
+    	shmdt(shared_memory);
+ 	
+	/* now remove the shared memory segment */
+	shmctl(segment_id, IPC_RMID, NULL);
+	return 0;
 }
