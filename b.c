@@ -37,6 +37,13 @@ int main(int argc, char *argv[]){
 	shared_memory = (m_sh *) shmat(segment_id, NULL, 0);
 	int switcher = 1;
 
+	while(shared_memory->flag == 1){
+		printf("%d, %s", shared_memory->dec_num, shared_memory->bin_num);
+		shared_memory->flag = 0;
+	}
+
+	/*
+
 	while(switcher){
 		flag = shared_memory->flag;
 		if(flag == 1){
@@ -78,4 +85,5 @@ int main(int argc, char *argv[]){
 			}
 		}
 	}
+	*/
 }
