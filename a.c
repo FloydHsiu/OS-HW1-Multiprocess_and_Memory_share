@@ -36,17 +36,18 @@ int main(){
 		execlp("./b.out", s, (char *)0);
     }
     else{
-		while(1){
+		while(switcher){
 			if(shared_memory->flag == 0){
 				printf("Please input a number:");
 	    		scanf("%d",&shared_memory->dec_num);		
 	    		shared_memory->flag = 1;
-				printf("Step 0\n");
 			}
 			else if(shared_memory->flag == 2){
-				printf("Step 2\n");
-				printf("%s",shared_memory->bin_num);
+				printf("%s\n",shared_memory->bin_num);
 				shared_memory->flag = 0;
+			}
+			else if(shared_memory->flag == 3){
+				switcher = 0;
 			}
 		}
     }

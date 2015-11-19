@@ -7,8 +7,6 @@
 #include <unistd.h>
 #include <math.h>
 
-//void dec_to_bin();
-
 struct datas{
 	int dec;
 	char dec_bin[25];
@@ -28,7 +26,7 @@ typedef struct datas data;
 m_sh *shared_memory;
 	//B storage
 	data storage[30];
-	int store_top = 0;
+	int store_top = -1;
 	int *SHM_dec_num;
 	char *SHM_bin_num;
 	int *SHM_flag;
@@ -39,7 +37,8 @@ int main(int argc, char *argv[]){
 	int flag;
 	int dec_num;//for trans dec to bin
 	int i;//for loop
-	int index, frequency_1, num_index, answer;//temp attribute of the answer
+	int index, frequency_1, answer;//temp attribute of the answer
+	int max, min;
 
 
 	shared_memory = (m_sh *) shmat(segment_id, NULL, 0);
@@ -57,99 +56,61 @@ int main(int argc, char *argv[]){
 					if((dec_num & 1) == 1) frequency_1++;
 				}
 				sprintf(SHM_bin_num, "%d:%d;", *SHM_dec_num, answer);
+				store_top++;
 				storage[store_top].frequency_1 = frequency_1;
 				storage[store_top].dec = *SHM_dec_num;
 				storage[store_top].length = (*SHM_dec_num/10) + index +3;
 				sprintf(storage[store_top].dec_bin, "%s", SHM_bin_num);
-				shared_memory->flag = 2;
-
+				*SHM_flag = 2;
 			}
 			else if(*SHM_dec_num == -1){
-				sprintf(shared_memory->bin_num, "GGGGG");
-				shared_memory->flag = 2;
+				if(store_top < 0){
+					sprintf(SHM_bin_num, "Error!");
+				}
+				else{
+					max = storage[0].frequency_1;
+					//find max
+					for(i=1; i<=store_top ; i++){
+						if(storage[i].frequency_1 > max){
+							max = storage[i].frequency_1;
+						}
+					}
+					//output search result
+					for(i=0,index=0; i<=store_top ; i++){
+						if(storage[i].frequency_1 == max){
+							sprintf(&SHM_bin_num[index], "%s", storage[i].dec_bin);
+							index += storage[i].length;
+						}
+					}
+				}
+				*SHM_flag = 2;
 			}
 			else if(*SHM_dec_num == -2){
-
+				if(store_top < 0){
+					sprintf(SHM_bin_num, "Error!");
+				}
+				else{
+					min = storage[0].frequency_1;
+					//find max
+					for(i=1; i<=store_top ; i++){
+						if(storage[i].frequency_1 < min){
+							min = storage[i].frequency_1;
+						}
+					}
+					//output search result
+					for(i=0,index=0; i<=store_top ; i++){
+						if(storage[i].frequency_1 == min){
+							sprintf(&SHM_bin_num[index], "%s", storage[i].dec_bin);
+							index += storage[i].length;
+						}
+					}
+				}
+				*SHM_flag = 2;
 			}
 			else{
-
-			}
-		}
-	}
-
-	/*
-
-	while(switcher){
-		flag = shared_memory->flag;
-		if(flag == 1){
-			dec_num = shared_memory->dec_num;
-			if(dec_num >= 0){
-				index = -1;
-				frequency_1 = 0;
-				// dec to bin
-				while( dec_num >= 0){
-					reverse[++index] = dec_num & mask;
-					if(reverse[index-1] == 1) frequency_1++;
-					dec_num = dec_num >> 1;
-				}
-				for(i =index; i >=0; i--){
-					result[index-i] = reverse[i];
-				}
-				result[++index] = '\0';
-				//start to save data
-				num_index = shared_memory->dec_num/10 + 1;
-				storage[store_top].length = num_index + index + 3;
-				storage[store_top].frequency_1 = frequency_1;
-				sprintf(storage[store_top].dec_bin, "%d:%s;", shared_memory->dec_num, result);
-				//save it to SHM
-				sprintf(shared_memory->bin_num, "%s", storage[store_top].dec_bin);
-				store_top++;
-			}
-			else if(dec_num == -1){
-
-			}
-			else if(dec_num == -2){
-
-			}
-			else if(dec_num == -3){
-				//process off
+				*SHM_flag = 3;
 				switcher = 0;
 			}
-			else{
-
-			}
 		}
 	}
-	*/
 }
-
-/*void dec_to_bin(){
-	int dec_num, mask =1;//for trans dec to bin
-	int i;//for loop
-	char reverse[20], result[20];//temp array to save answer
-	int index, frequency_1, num_index;//temp attribute of the answer
-
-	index = -1;
-	frequency_1 = 0;
-	// dec to bin
-	while( dec_num >0){
-		index++;
-		reverse[index] = dec_num & mask;
-		sprintf(&reverse[index], "%d", dec_num&mask);
-		if(reverse[index] == '1') frequency_1++;
-		dec_num = dec_num >> 1;
-	}
-	for(i =index; i >=0; i--){
-		result[index-i] = reverse[i];
-	}
-	index++;
-	result[index] = '\0';
-	//start to save data
-	num_index = shared_memory->dec_num/10 + 1;
-	storage[store_top].length = num_index + index + 3;
-	storage[store_top].frequency_1 = frequency_1;
-	sprintf(storage[store_top].dec_bin, "%s;", result);
-	//save it to SHM
-	sprintf(shared_memory->bin_num, "%s", storage[store_top].dec_bin);
-	store_top++;
-}*/
