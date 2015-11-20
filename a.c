@@ -23,6 +23,7 @@ int main(){
 	shared_memory->flag = 0;
 	shared_memory->dec_num = 0;
 	char s[10];
+	/* trigger to turn off the program */
 	int switcher = 1;
 	sprintf(s, "%d", segment_id);
 	pid_t pid;
@@ -30,10 +31,10 @@ int main(){
 	pid = fork();
 
 	if(pid < 0){
-		printf("boom");
+		printf("Fork fail!");
 	}
 	else if (pid == 0) { 
-		execlp("./b.out", s, (char *)0);
+		execlp("./B10232017_b.out", s, (char *)0);
     }
     else{
 		while(switcher){

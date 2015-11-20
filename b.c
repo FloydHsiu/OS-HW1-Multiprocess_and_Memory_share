@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 	int segment_id = atoi(argv[0]);
 	int flag;
 	int dec_num;//for trans dec to bin
-	int i;//for loop
+	int i;//for for loop
 	int index, frequency_1, answer;//temp attribute of the answer
 	int max, min;
 
@@ -48,13 +48,16 @@ int main(int argc, char *argv[]){
 
 	int switcher = 1;
 	while(switcher){
+		/* respond for the input which is input in a.*/
 		if( *SHM_flag == 1){
+			/* dec to bin */
 			if(*SHM_dec_num >= 0){
 				frequency_1 = 0;
 				for(dec_num = *SHM_dec_num, index = 0, answer = 0; dec_num > 0; dec_num = dec_num >> 1,index++){
 					answer += (int)((dec_num & 1) * pow(10, index));
 					if((dec_num & 1) == 1) frequency_1++;
 				}
+				/* save all result */
 				sprintf(SHM_bin_num, "%d:%d;", *SHM_dec_num, answer);
 				store_top++;
 				storage[store_top].frequency_1 = frequency_1;
@@ -62,10 +65,12 @@ int main(int argc, char *argv[]){
 				storage[store_top].length = (*SHM_dec_num/10) + index +3;
 				sprintf(storage[store_top].dec_bin, "%s", SHM_bin_num);
 				*SHM_flag = 2;
+				/* flag 2 -> a print out the result*/
 			}
+			/* return the number(bin) with max 1 */
 			else if(*SHM_dec_num == -1){
 				if(store_top < 0){
-					sprintf(SHM_bin_num, "Error!");
+					sprintf(SHM_bin_num, "Error! You don't have any data!");
 				}
 				else{
 					max = storage[0].frequency_1;
@@ -85,9 +90,10 @@ int main(int argc, char *argv[]){
 				}
 				*SHM_flag = 2;
 			}
+			/* return the number(bin) with min 1 */
 			else if(*SHM_dec_num == -2){
 				if(store_top < 0){
-					sprintf(SHM_bin_num, "Error!");
+					sprintf(SHM_bin_num, "Error! You don't have any data!");
 				}
 				else{
 					min = storage[0].frequency_1;
@@ -107,8 +113,10 @@ int main(int argc, char *argv[]){
 				}
 				*SHM_flag = 2;
 			}
+			/* close B */
 			else{
 				*SHM_flag = 3;
+				/* flag 3 -> close the while loop in A */
 				switcher = 0;
 			}
 		}
