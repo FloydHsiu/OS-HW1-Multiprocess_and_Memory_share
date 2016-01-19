@@ -1,1 +1,10 @@
-# Multiprocess_and_Memory_share_linux
+# Linux Multiprocess and Memory share practice
+using Linux posix API
+
+###作業題目:
+>1. A程式先建立一塊共享記憶體(SM)，然後，A經由process產生，載入B程式並讓B程式執行
+>2. A程式把user輸入的整數存入SM，然後從SM讀取B程式傳回之二進位表示的字串(如："14:1110")，並印到螢幕上。
+>3. B程式陸續從SM讀出正整數，除了立即轉成二進位表示字串傳回，還需把正整數及二進字串儲存起來。
+>4. 當user輸入負整數-1時，B程式從SM收到-1，則作搜尋把過去收到的正整數中，位元(bit)1出現最多之正整數及其二進字串傳回。
+Ex:"15:1111;30:11110"
+>5. 當user輸入負整數-2時，B程式從SM收到-2，則作搜尋把過去收到的正整數中，位元(bit)1出現最少之正整數及其二進字串傳回。
